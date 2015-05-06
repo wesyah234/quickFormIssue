@@ -1,0 +1,28 @@
+<template name="editBook">
+  <p>update form</p>
+  This is an update form for document with _id : {{_id}}
+  {{> quickForm collection="Books" id="updateBookForm" doc=this type="method-update" meteormethod="updateBook"}}
+</template>
+
+
+<template name='insertAndShowBooks'>
+  <p>insert form</p>
+  {{> quickForm collection="Books" id="insertBookForm" type="method" meteormethod="insertBook"}}
+  <table>
+  {{#each theBooks}}
+  <tr>
+    <td>{{_id}}</td>
+    <td>{{title}}</td>
+    <td>{{author}}</td>
+    <td><a href="{{pathFor 'book.show'}}">{{title}}</a></td>
+  </tr>
+  {{/each}} 
+  </table>
+</template>
+
+<!-- client/main.html -->
+<template name="main">
+  <div class="container">
+    {{> yield}}
+  </div>
+</template>
