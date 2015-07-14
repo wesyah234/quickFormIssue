@@ -4,25 +4,40 @@
   {{> quickForm collection="Books" id="updateBookForm" doc=this type="method-update" meteormethod="updateBook"}}
 </template>
 
+<template name='showBooks'>
+  <table border='2'>
+    <tr>
+    <td>id</td>
+    <td>title</td>
+    <td>author</td>
+    <td></td>
+    </tr>
+    {{#each theBooks}}
+    <tr>
+      <td><a href="{{pathFor 'book.show'}}">{{_id}}</a></td>
+      <td>{{title}}</td>
+      <td>{{author}}</td>
+      <td><a href="{{pathFor 'book.delete'}}">delete</a></td>
+    </tr>
+    {{/each}} 
+  </table>
+</template>
 
-<template name='insertAndShowBooks'>
+
+<template name='insertBook'>
   <p>insert form</p>
   {{> quickForm collection="Books" id="insertBookForm" type="method" meteormethod="insertBook"}}
-  <table>
-  {{#each theBooks}}
-  <tr>
-    <td>{{_id}}</td>
-    <td>{{title}}</td>
-    <td>{{author}}</td>
-    <td><a href="{{pathFor 'book.show'}}">{{title}}</a></td>
-  </tr>
-  {{/each}} 
-  </table>
+</template>
+
+<template name='navBar'>
+  <a href="/">Home</a> | <a href="/new">New Book</a>
 </template>
 
 <!-- client/main.html -->
 <template name="main">
   <div class="container">
+    {{> navBar}}
+    <hr>
     {{> yield}}
   </div>
 </template>
