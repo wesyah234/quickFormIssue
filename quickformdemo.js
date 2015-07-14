@@ -44,8 +44,6 @@ Books.attachSchema(new SimpleSchema({
 }));
 
 
-// todo: try nested elements here and if a problem, ask RE on the discussion forum.
-
 Router.configure({
   layoutTemplate: 'main'
 });
