@@ -43,14 +43,20 @@ Books.attachSchema(new SimpleSchema({
 //  }
 }));
 
+subs = new SubsManager();
 
 Router.configure({
   layoutTemplate: 'main'
 });
-Router.route('/', 'showBooks');
+Router.route('/', function () {
+  subs.subscribe('books');
+  this.render('showBooks');
+}, {
+  name: 'home'
+});
 Router.route('/new', 'insertBook');
 Router.route('/book/:_id', function () {
-  Meteor.subscribe('book', this.params._id);
+  subs.subscribe('book', this.params._id);
   var item = Books.findOne({_id: this.params._id});
   this.render('editBook', {data: item});
 }, {
@@ -89,23 +95,23 @@ Meteor.methods({
 });
 
 if (Meteor.isClient) {
-  Meteor.subscribe('books');
   Template.showBooks.helpers({
     'theBooks': function () {
       console.log("finding books in the helper");
       return Books.find({});
     }
   });
+
 }
 
 if (Meteor.isServer) {
   Meteor.publish("books", function () {
-    var foundOnServer = Books.find({}, {sort: {"title": 1}, fields: {"_id": 1, "title": 1, "author": 1 }});
+    var foundOnServer = Books.find({}, {sort: {"title": 1}, fields: {"_id": 1, "title": 1, "author": 1}});
     console.log("returning books")
     return foundOnServer;
   });
   Meteor.publish("book", function (id) {
-    var foundOnServer = Books.find({_id:id}, {fields: {"_id": 1, "title": 1, "author": 1, "extra":1 }});
+    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, "extra": 1}});
     console.log("returning a single book with full info, id: " + id);
     return foundOnServer;
   });

@@ -10,6 +10,7 @@
     <td>id</td>
     <td>title</td>
     <td>author</td>
+    <td>extra</td>
     <td></td>
     </tr>
     {{#each theBooks}}
@@ -17,6 +18,7 @@
       <td><a href="{{pathFor 'book.show'}}">{{_id}}</a></td>
       <td>{{title}}</td>
       <td>{{author}}</td>
+      <td>{{extra}}</td>
       <td><a href="{{pathFor 'book.delete'}}">delete</a></td>
     </tr>
     {{/each}} 
