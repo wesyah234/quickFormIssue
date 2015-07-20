@@ -1,24 +1,34 @@
 <template name="editBook">
   <p>update form</p>
-  This is an update form for document with _id : {{_id}}
+  This is an update form for document with _id : {{this._id}}
   {{> quickForm collection="Books" id="updateBookForm" doc=this type="method-update" meteormethod="updateBook"}}
+<!--  and another form for nested field of document with _id : {{this._id}}-->
+<!--  {{#autoForm collection="Books" id="updateBookNestedForm"  }}
+  {{> afQuickField name='nestedField.city'}}
+  {{/autoForm}}-->
 </template>
 
 <template name='showBooks'>
   <table border='2'>
     <tr>
-    <td>id</td>
-    <td>title</td>
-    <td>author</td>
-    <td>extra</td>
-    <td></td>
+      <td>id</td>
+      <td>title</td>
+<!--      <td>author</td>-->
+      <td>publishDate (no formatting)</td>
+      <td>publishDate (moment mdy helper)</td>
+      <td>publishDate (moment mdytime helper)</td>
+<!--      <td>extra</td>-->
+      <td></td>
     </tr>
     {{#each theBooks}}
     <tr>
       <td><a href="{{pathFor 'book.show'}}">{{_id}}</a></td>
       <td>{{title}}</td>
-      <td>{{author}}</td>
-      <td>{{extra}}</td>
+<!--      <td>{{author}}</td>-->
+      <td>{{publishDate}}</td>
+      <td>{{mdy publishDate}}</td>
+      <td>{{mdytime publishDate}}</td>
+<!--      <td>{{extra}}</td>-->
       <td><a href="{{pathFor 'book.delete'}}">delete</a></td>
     </tr>
     {{/each}} 
@@ -33,6 +43,12 @@
 
 <template name='navBar'>
   <a href="/">Home</a> | <a href="/new">New Book</a>
+
+
+
+
+
+
 </template>
 
 <!-- client/main.html -->

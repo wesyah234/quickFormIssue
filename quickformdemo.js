@@ -1,3 +1,4 @@
+
 Books = new Mongo.Collection("books");
 Books.attachSchema(new SimpleSchema({
   title: {
@@ -5,14 +6,18 @@ Books.attachSchema(new SimpleSchema({
     label: "Title",
     max: 200
   },
-  author: {
-    type: String,
-    label: "Author"
+//  author: {
+//    type: String,
+//    label: "Author"
+//  },
+  publishDate: {
+    type: Date,
+    label: "Publish Date"
   },
-  extra: {
-    type: String,
-    label: "Extra"
-  },
+//  extra: {
+//    type: String,
+//    label: "Extra"
+//  },
 //  'nestedFieldMultiple' : {
 //    type:[Object],
 //    label:"multiple city state blocks below"
@@ -27,15 +32,15 @@ Books.attachSchema(new SimpleSchema({
 //    label: "State",
 //    max: 200
 //  },
-  'nestedField' : {
-    type:Object,
-    label:"singly occurring nested field"
-  },
-  'nestedField.city': {
-    type: String,
-    label: "City",
-    max: 200
-  },
+//  'nestedField': {
+//    type: Object,
+//    label: "singly occurring nested field"
+//  },
+//  'nestedField.city': {
+//    type: String,
+//    label: "City",
+//    max: 200
+//  },
 //  'nestedField.state': {
 //    type: String,
 //    label: "State",
@@ -107,6 +112,20 @@ Meteor.methods({
 });
 
 if (Meteor.isClient) {
+  Template.registerHelper("mdy", function (date) {
+    if (date) {
+      return moment(date).format('MM/DD/YYYY');
+    }
+  });
+
+  Template.registerHelper("mdytime", function (date) {
+    if (date) {
+      return moment(date).format('MM/DD/YYYY h:mm:ss a');
+    }
+  });
+
+
+
   Template.showBooks.helpers({
     'theBooks': function () {
       console.log("showBooks theBooks helper doing a find of all books...");
@@ -115,21 +134,20 @@ if (Meteor.isClient) {
       return books;
     }
   });
-
 }
 
 if (Meteor.isServer) {
   Meteor.publish("books", function () {
 //    console.log("fetching books, but it takes 6  seconds...")
 //    Meteor._sleepForMs(6000);
-    var foundOnServer = Books.find({}, {sort: {"title": 1}, fields: {"_id": 1, "title": 1, "author": 1}});
+    var foundOnServer = Books.find({}, {sort: {"title": 1}, fields: {"_id": 1, "title": 1, "author": 1, 'publishDate': 1}});
     console.log("returning books")
     return foundOnServer;
   });
   Meteor.publish("book", function (id) {
 //    console.log("fetching book " + id + ", waiting 4 sec...")
 //    Meteor._sleepForMs(4000);
-    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, "extra": 1, "nestedField":1}});
+    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, 'publishDate': 1, "extra": 1, "nestedField": 1}});
     console.log("returning a single book with full info, id: " + id);
     return foundOnServer;
   });
