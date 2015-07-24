@@ -66,19 +66,39 @@ Router.route('/', {
 });
 Router.route('/new', 'insertBook');
 Router.route('/book/:_id', {
-  action: function () {
-    console.log("/book/:id action, finding the book " + this.params._id);
-    var item = Books.findOne({_id: this.params._id});
-    console.log("/book/:id action, found book:", item);
-    this.render('editBook', {data: item});
+  subscriptions: function () {
+    var id = this.params._id;
+    console.log("/book/:id subscriptions " + id);
+    subs.subscribe('book', id);
+  },
+  data: function () {
+    var id = this.params._id;
+    console.log("/book/:id data," + id);
+    return Books.findOne({_id: id});
   },
   name: 'book.show',
-  waitOn: function () {
-    console.log("/book/:id waitOn...");
-    subs.subscribe('book', this.params._id);
+  template: 'editBook',
+  onRun: function() {
+    var id = this.params._id;
+    console.log("on run, log a view of book " + id);
+    this.next();
   }
 }
 );
+//Router.route('/book/:_id', {
+//  action: function () {
+//    console.log("/book/:id action, finding the book " + this.params._id);
+//    var item = Books.findOne({_id: this.params._id});
+//    console.log("/book/:id action, found book:", item);
+//    this.render('editBook', {data: item});
+//  },
+//  name: 'book.show',
+//  waitOn: function () {
+//    console.log("/book/:id waitOn...");
+//    subs.subscribe('book', this.params._id);
+//  }
+//}
+//);
 Router.route('/deleteBook/:_id', function () {
   Meteor.call("deleteBook", this.params._id);
   Router.go('/');
@@ -134,6 +154,7 @@ if (Meteor.isClient) {
       return books;
     }
   });
+
 }
 
 if (Meteor.isServer) {
