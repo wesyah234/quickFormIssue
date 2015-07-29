@@ -14,6 +14,21 @@ Books.attachSchema(new SimpleSchema({
     type: Date,
     label: "Publish Date"
   },
+  
+  'sequelTo': {
+    type: String,
+    label: "Sequel To",
+    optional:true,
+    autoform: {
+      options: function () {
+        var options = Books.find({}, {sort: {"title": 1}}).map(function (c) {
+          return {label: c.title, value: c._id};
+        });
+        console.log("getting books for autoform options, found " + options.length);
+        return options;
+      }
+    }
+  },  
 //  extra: {
 //    type: String,
 //    label: "Extra"
@@ -168,7 +183,7 @@ if (Meteor.isServer) {
   Meteor.publish("book", function (id) {
 //    console.log("fetching book " + id + ", waiting 4 sec...")
 //    Meteor._sleepForMs(4000);
-    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, 'publishDate': 1, "extra": 1, "nestedField": 1}});
+    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, "sequelTo":1, 'publishDate': 1, "extra": 1, "nestedField": 1}});
     console.log("returning a single book with full info, id: " + id);
     return foundOnServer;
   });
