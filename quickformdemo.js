@@ -14,11 +14,10 @@ Books.attachSchema(new SimpleSchema({
     type: Date,
     label: "Publish Date"
   },
-  
   'sequelTo': {
     type: String,
     label: "Sequel To",
-    optional:true,
+    optional: true,
     autoform: {
       options: function () {
         var options = Books.find({}, {sort: {"title": 1}}).map(function (c) {
@@ -28,7 +27,7 @@ Books.attachSchema(new SimpleSchema({
         return options;
       }
     }
-  },  
+  },
 //  extra: {
 //    type: String,
 //    label: "Extra"
@@ -81,19 +80,19 @@ Router.route('/', {
 });
 Router.route('/new', 'insertBook');
 Router.route('/book/:_id', {
-  subscriptions: function () {
-    var id = this.params._id;
-    console.log("/book/:id subscriptions " + id);
-    subs.subscribe('book', id);
-  },
+//  subscriptions: function () {
+//    var id = this.params._id;
+//    console.log("/book/:id subscriptions " + id);
+//    subs.subscribe('book', id);
+//  },
   data: function () {
     var id = this.params._id;
     console.log("/book/:id data," + id);
-    return Books.findOne({_id: id});
+    return {_id: id};
   },
   name: 'book.show',
   template: 'editBook',
-  onRun: function() {
+  onRun: function () {
     var id = this.params._id;
     console.log("on run, log a view of book " + id);
     this.next();
@@ -160,6 +159,26 @@ if (Meteor.isClient) {
   });
 
 
+  Template.editBook.onCreated(function () {
+    console.log("template edit book on created!");
+    var self = this;
+    // Use self.subscribe with the data context reactively
+    self.autorun(function () {
+      var dataContext = Template.currentData();
+      var id = dataContext._id;
+      console.log("self autorun, subbing to book id: " + id);
+      subs.subscribe('book', id);
+    });
+  });
+  
+  Template.editBook.helpers( {
+    theBook: function () {
+      var dataContext = Template.currentData();
+      var id = dataContext._id;
+      console.log("theBook helper for id: " + id);
+      return Books.findOne({_id:id});
+    }
+  })
 
   Template.showBooks.helpers({
     'theBooks': function () {
@@ -183,7 +202,7 @@ if (Meteor.isServer) {
   Meteor.publish("book", function (id) {
 //    console.log("fetching book " + id + ", waiting 4 sec...")
 //    Meteor._sleepForMs(4000);
-    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, "sequelTo":1, 'publishDate': 1, "extra": 1, "nestedField": 1}});
+    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, "sequelTo": 1, 'publishDate': 1, "extra": 1, "nestedField": 1}});
     console.log("returning a single book with full info, id: " + id);
     return foundOnServer;
   });

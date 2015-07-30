@@ -1,7 +1,7 @@
 <template name="editBook">
   <p>update form</p>
   This is an update form for document with _id : {{this._id}}
-  {{> quickForm collection="Books" id="updateBookForm" doc=this type="method-update" meteormethod="updateBook"}}
+  {{> quickForm collection="Books" id="updateBookForm" doc=theBook type="method-update" meteormethod="updateBook"}}
 <!--  and another form for nested field of document with _id : {{this._id}}-->
 <!--  {{#autoForm collection="Books" id="updateBookNestedForm"  }}
   {{> afQuickField name='nestedField.city'}}
