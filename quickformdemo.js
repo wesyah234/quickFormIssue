@@ -6,60 +6,20 @@ Books.attachSchema(new SimpleSchema({
     label: "Title",
     max: 200
   },
-//  author: {
-//    type: String,
-//    label: "Author"
-//  },
-  publishDate: {
-    type: Date,
-    label: "Publish Date"
-  },
-  'sequelTo': {
+   'yesOrNo': {
     type: String,
-    label: "Sequel To",
     optional: true,
+    label: "Yes or no, you decide",
     autoform: {
+      type: 'select-radio',
       options: function () {
-        var options = Books.find({}, {sort: {"title": 1}}).map(function (c) {
-          return {label: c.title, value: c._id};
-        });
-        console.log("getting books for autoform options, found " + options.length);
-        return options;
+        return [
+          {label: "Yes", value: "Yes"},
+          {label: "No", value: "No"},
+        ]
       }
     }
   },
-//  extra: {
-//    type: String,
-//    label: "Extra"
-//  },
-//  'nestedFieldMultiple' : {
-//    type:[Object],
-//    label:"multiple city state blocks below"
-//  },
-//  'nestedFieldMultiple.$.city': {
-//    type: String,
-//    label: "City",
-//    max: 200
-//  },
-//  'nestedFieldMultiple.$.state': {
-//    type: String,
-//    label: "State",
-//    max: 200
-//  },
-//  'nestedField': {
-//    type: Object,
-//    label: "singly occurring nested field"
-//  },
-//  'nestedField.city': {
-//    type: String,
-//    label: "City",
-//    max: 200
-//  },
-//  'nestedField.state': {
-//    type: String,
-//    label: "State",
-//    max: 200
-//  }
 }));
 
 subs = new SubsManager();
@@ -80,11 +40,6 @@ Router.route('/', {
 });
 Router.route('/new', 'insertBook');
 Router.route('/book/:_id', {
-//  subscriptions: function () {
-//    var id = this.params._id;
-//    console.log("/book/:id subscriptions " + id);
-//    subs.subscribe('book', id);
-//  },
   data: function () {
     var id = this.params._id;
     console.log("/book/:id data," + id);
@@ -99,20 +54,7 @@ Router.route('/book/:_id', {
   }
 }
 );
-//Router.route('/book/:_id', {
-//  action: function () {
-//    console.log("/book/:id action, finding the book " + this.params._id);
-//    var item = Books.findOne({_id: this.params._id});
-//    console.log("/book/:id action, found book:", item);
-//    this.render('editBook', {data: item});
-//  },
-//  name: 'book.show',
-//  waitOn: function () {
-//    console.log("/book/:id waitOn...");
-//    subs.subscribe('book', this.params._id);
-//  }
-//}
-//);
+
 Router.route('/deleteBook/:_id', function () {
   Meteor.call("deleteBook", this.params._id);
   Router.go('/');
@@ -193,16 +135,14 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
   Meteor.publish("books", function () {
-//    console.log("fetching books, but it takes 6  seconds...")
-//    Meteor._sleepForMs(6000);
-    var foundOnServer = Books.find({}, {sort: {"title": 1}, fields: {"_id": 1, "title": 1, "author": 1, 'publishDate': 1}});
+    var foundOnServer = Books.find({}, {sort: {"title": 1}});
     console.log("returning books")
     return foundOnServer;
   });
   Meteor.publish("book", function (id) {
 //    console.log("fetching book " + id + ", waiting 4 sec...")
 //    Meteor._sleepForMs(4000);
-    var foundOnServer = Books.find({_id: id}, {fields: {"_id": 1, "title": 1, "author": 1, "sequelTo": 1, 'publishDate': 1, "extra": 1, "nestedField": 1}});
+    var foundOnServer = Books.find({_id: id});
     console.log("returning a single book with full info, id: " + id);
     return foundOnServer;
   });
