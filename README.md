@@ -1,2 +1,2 @@
-# quickFormDemo
-demo of using meteor quickform package with Iron Router and Subscription Manager
+# quickFormIssue
+demo of an issue I had with quickform / autoform
